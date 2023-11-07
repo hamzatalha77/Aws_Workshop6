@@ -10,7 +10,7 @@ function App() {
   const [content, setContent] = useState('')
 
   const API_URL =
-    'https://u85th1dlw1.execute-api.us-east-1.amazonaws.com/myw6stage/new-ryouma-resource'
+    'https://0s3p84nqfb.execute-api.us-east-1.amazonaws.com/dev/api'
 
   useEffect(() => {
     axios
@@ -49,12 +49,11 @@ function App() {
           onChange={(e) => setSelectedBucket(e.target.value)}
         >
           <option value="">-- Choose a bucket --</option>
-          {Array.isArray(buckets) &&
-            buckets.map((bucket) => (
-              <option key={bucket} value={bucket}>
-                {bucket}
-              </option>
-            ))}
+          {buckets.map((bucket) => (
+            <option key={bucket} value={bucket}>
+              {bucket}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -66,12 +65,11 @@ function App() {
             onChange={(e) => setSelectedObject(e.target.value)}
           >
             <option value="">-- Choose an object --</option>
-            {Array.isArray(objects) &&
-              objects.map((obj) => (
-                <option key={obj} value={obj}>
-                  {obj}
-                </option>
-              ))}
+            {objects.map((obj) => (
+              <option key={obj} value={obj}>
+                {obj}
+              </option>
+            ))}
           </select>
         </div>
       )}
