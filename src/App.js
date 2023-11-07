@@ -1,25 +1,89 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import './App.css'
 
 function App() {
+  const [buckets, setBuckets] = useState([])
+  const [selectedBucket, setSelectedBucket] = useState('')
+  const [objects, setObjects] = useState([])
+  const [selectedObject, setSelectedObject] = useState('')
+  const [content, setContent] = useState('')
+
+  const API_URL =
+    'https://u85th1dlw1.execute-api.us-east-1.amazonaws.com/myw6stage/new-ryouma-resource'
+
+  useEffect(() => {
+    axios
+      .get(API_URL)
+      .then((response) => setBuckets(response.data))
+      .catch((error) => console.error('Error fetching buckets:', error))
+  }, [])
+
+  useEffect(() => {
+    if (selectedBucket) {
+      axios
+        .get(`${API_URL}?bucket=${selectedBucket}`)
+        .then((response) => setObjects(response.data))
+        .catch((error) => console.error('Error fetching objects:', error))
+    }
+  }, [selectedBucket])
+
+  useEffect(() => {
+    if (selectedBucket && selectedObject) {
+      axios
+        .get(`${API_URL}?bucket=${selectedBucket}&key=${selectedObject}`)
+        .then((response) => setContent(response.data))
+        .catch((error) =>
+          console.error('Error fetching object content:', error)
+        )
+    }
+  }, [selectedBucket, selectedObject])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div className="app">
+      <h1>Workshop 6:</h1>
+      <div>
+        <label>Select Bucket: </label>
+        <select
+          value={selectedBucket}
+          onChange={(e) => setSelectedBucket(e.target.value)}
         >
-          Learn React
-        </a>
-      </header>
+          <option value="">-- Choose a bucket --</option>
+          {Array.isArray(buckets) &&
+            buckets.map((bucket) => (
+              <option key={bucket} value={bucket}>
+                {bucket}
+              </option>
+            ))}
+        </select>
+      </div>
+
+      {selectedBucket && (
+        <div>
+          <label>Select Object: </label>
+          <select
+            value={selectedObject}
+            onChange={(e) => setSelectedObject(e.target.value)}
+          >
+            <option value="">-- Choose an object --</option>
+            {Array.isArray(objects) &&
+              objects.map((obj) => (
+                <option key={obj} value={obj}>
+                  {obj}
+                </option>
+              ))}
+          </select>
+        </div>
+      )}
+
+      {selectedObject && (
+        <div>
+          <h3>Content:</h3>
+          <pre>{content}</pre>
+        </div>
+      )}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
